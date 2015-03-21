@@ -2,25 +2,30 @@
   "name": "allergen-alerts",
   "version": "0.1.0",
   "description": "Publishing notifications of allergen contamination to Twitter.",
-  "main": "rss_app.js",
+  "main": "./rss_app.js",
   "scripts": {
-      "start": "node rss_app.js"
+    "start": "node rss_app.js"
   },
   "dependencies": {
     "htmlparser": "~1.7.7",
     "twit": "~1.1.20"
   },
   "engines": {
-      "node": "0.10.x",
-      "npm": "2.7.3"
+    "node": "0.10.x",
+    "npm": "2.7.3"
   },
   "repository": {
-      "type": "git",
-      "url": "https://github.com/martian-a/hackberry"
+    "type": "git",
+    "url": "https://github.com/martian-a/hackberry"
   },
   "keywords": [
-      "node",
-      "heroku"
+    "node",
+    "heroku"
   ],
-  "author": "Hackberry"
+  "author": "Hackberry",
+  "bugs": {
+    "url": "https://github.com/martian-a/hackberry/issues"
+  },
+  "devDependencies": {},
+  "license": "GNU"
 }
