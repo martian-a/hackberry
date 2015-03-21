@@ -88,8 +88,10 @@ function publishToTwitter(item){
 
 }
 
-// looping on the server (every second)
-setInterval(function(){
+/*
+	Check the FSA RSS feed and publish new items on Twitter.
+*/
+function getNewAlerts(){
 
 	// Retrieve latest from FSA data feed
     request({uri: rssUrl}, function(err, response, body){
@@ -134,4 +136,7 @@ setInterval(function(){
         
     });
     console.log('\n');
-}, intervalLength);
+}
+
+// looping on the server (every second)
+setInterval(getNewAlerts(), intervalLength);
