@@ -141,7 +141,7 @@ function getNewAlerts(){
 /*
 	Make an initial check for updates.
 */
-setImmediate(getNewAlerts, intervalLength);
+setImmediate(getNewAlerts);
 
 
 /*
