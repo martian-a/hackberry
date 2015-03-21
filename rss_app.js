@@ -6,7 +6,13 @@ Twit = require('twit');
 
 // Config variables
 var rssUrl = 'http://www.food.gov.uk/news-updates/allergynews-rss';
-var intervalLength = 2000;
+
+/*
+	Specify how frequently the FSA RSS feed should be checked
+	(milliseconds)
+*/
+var oneMinute = (1000 * 60);
+var intervalLength = (5 * oneMinute);
 
 var twitter = new Twit({
     	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
