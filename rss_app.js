@@ -12,7 +12,7 @@ var rssUrl = 'http://www.food.gov.uk/news-updates/allergynews-rss';
 	(milliseconds)
 */
 var oneMinute = (1000 * 60);
-var intervalLength = (0.1 * oneMinute);
+var intervalLength = (5 * oneMinute);
 
 var twitter = new Twit({
     	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
