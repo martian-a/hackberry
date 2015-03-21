@@ -1,0 +1,8 @@
+# Keys
+
+The following environment variables are expected to be set with their corresponding key values:
+
+TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY
+TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET
+TWITTER_ALLERGEN_ALERTS_ACCESS_TOKEN
+TWITTER_ALLERGEN_ALERTS_ACCESS_SECRET
