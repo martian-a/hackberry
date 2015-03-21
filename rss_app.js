@@ -138,5 +138,14 @@ function getNewAlerts(){
     console.log('\n');
 }
 
-// looping on the server (every second)
-setInterval(getNewAlerts(), intervalLength);
+/*
+	Make an initial check for updates.
+*/
+setImmediate(getNewAlerts, intervalLength);
+
+
+/*
+	Re-check every so often.
+	Frequency determined by the value of intervalLength.
+*/
+setInterval(getNewAlerts, intervalLength);
