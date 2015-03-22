@@ -85,6 +85,9 @@ var twitterCeleryAlerts = new Twit({
       , access_token_secret:  process.env['TWITTER_CELERY_ALERTS_ACCESS_SECRET']
 });
 
+console.log(process.env['TWITTER_SULPHITE_ALERTS_ACCESS_TOKEN']);
+console.log(process.env['TWITTER_SULPHITE_ALERTS_ACCESS_SECRET']);
+
 var twitterSulphiteAlertsEnabled = true;
 var twitterSulphiteAlerts = new Twit({
     	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
@@ -270,7 +273,7 @@ function getNewAlerts(){
             };
             
             
-            // Gluten
+f            // Gluten
 			if (
             	twitterGlutenAlertsEnabled == true && (
             		itemsToPublish[i].description.indexOf('gluten')>-1 || 
