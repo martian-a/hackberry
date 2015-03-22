@@ -72,7 +72,7 @@ http.createServer(function (req, res) {
 				case '/request/token/oauth':
 					passport.authenticate('twitter');
 					console.log('First step complete');
-					return;
+					break;
 				case '/request/token/access':
 					console.log('Callback received');
 					passport.authenticate(
