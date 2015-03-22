@@ -67,7 +67,7 @@ if (twitterGlutenAlertsEnabled == true) {
 	});
 };
 
-var twitterNutAlertsEnabled = false;
+var twitterNutAlertsEnabled = true;
 var twitterNutAlerts;
 if (twitterNutAlertsEnabled == true) {
 	twitterNutAlerts = new Twit({
