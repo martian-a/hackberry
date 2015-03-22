@@ -71,7 +71,9 @@ http.createServer(function (req, res) {
 			switch(url_parts.pathname) {
 				case '/request/token/oauth':
 					passport.authenticate('twitter');
-					return;				
+					break;
+				case '/request/token/access':
+					break;				
 				default:
 					console.log("oh dear, 404");
 			}  		
