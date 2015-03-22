@@ -3,6 +3,8 @@ url = require('url'),
 htmlparser = require('htmlparser'),
 fs = require('fs'),
 qs = require('querystring'),
+passport = require('passport'),
+TwitterStrategy = require('passport-twitter').Strategy,
 http = require('http');
 
 /*
@@ -41,6 +43,23 @@ var urlUserConfirmation = 'https://api.twitter.com/oauth/authenticate';
 var urlAccessToken = 'https://api.twitter.com/oauth/access_token';
 
 
+/*
+	Configure Passport.
+*/
+passport.use(
+	new TwitterStrategy(
+		{
+    		consumerKey: appKey,
+    		consumerSecret: appSecret,
+    		callbackURL: urlCallback
+  		},
+  		function(token, tokenSecret, profile, done) {
+			console.log('test');    
+    	}
+	)
+);
+
+
 http.createServer(function (req, res) {
 
 	setTimeout(
@@ -51,11 +70,8 @@ http.createServer(function (req, res) {
 	  
 			switch(url_parts.pathname) {
 				case '/request/token/oauth':
-					requestOauthToken(res);
-					return;
-				case '/request/token/access':
-					requestAccessToken(url_parts, res);
-					return;
+					passport.authenticate('twitter');
+					return;				
 				default:
 					console.log("oh dear, 404");
 			}  		

@@ -9,7 +9,10 @@
   "dependencies": {
     "htmlparser": "~1.7.7",
     "twit": "~1.1.20",
-    "request": "*"
+    "request": "*",
+    "passport": "*",
+    "passport-twitter": "*"
+    
   },
   "engines": {
     "node": "0.10.x",
