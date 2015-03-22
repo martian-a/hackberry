@@ -179,15 +179,17 @@ function getNewAlerts(){
             	more specific twitter feeds.
             */
             
-            // Egg
+            
+            /* Egg
             if (itemsToPublish[i].description.indexOf('egg')>-1 || itemsToPublish[i].description.indexOf('Egg')>-1) {
                 publishToTwitter(twitterEggAlerts, itemsToPublish[i]);
             }
             
-            // Milk 
+            / Milk 
             if (itemsToPublish[i].description.indexOf('milk')>-1 || itemsToPublish[i].description.indexOf('Milk')>-1) {
                 publishToTwitter(twitterMilkAlerts, itemsToPublish[i]);
             }
+            */
             
             // Fish 
             // if (itemsToPublish[i].description.indexOf('fish')>-1 || itemsToPublish[i].description.indexOf('Fish')>-1) {
@@ -196,7 +198,7 @@ function getNewAlerts(){
             
             /* Crustaceans
                Including crab, lobster, crayfish, shrimp, prawn.
-            */
+            
             if (
             	itemsToPublish[i].description.indexOf('crustacean')>-1 ||
             	itemsToPublish[i].description.indexOf('Crustacean')>-1 || 
@@ -210,21 +212,21 @@ function getNewAlerts(){
             	itemsToPublish[i].description.indexOf('Prawn')>-1
             ) {
                 
-                // Generic
+                / Generic
                 publishToTwitter(twitterNutAlerts, itemsToPublish[i]);
                 
-                // Peanut 
+                / Peanut 
                 if (itemsToPublish[i].description.indexOf('peanut')>-1 || itemsToPublish[i].description.indexOf('Peanut')>-1) {
 	                publishToTwitter(twitterPeanutAlerts, itemsToPublish[i]);
 	            }
             }
             
-            // Gluten
+            / Gluten
             if (itemsToPublish[i].description.indexOf('gluten')>-1 || itemsToPublish[i].description.indexOf('Gluten')>-1) {
                 publishToTwitter(twitterGlutenAlerts, itemsToPublish[i]);
             }
             
-            // Nuts
+            / Nuts
             if (
             	itemsToPublish[i].description.indexOf('nut')>-1 ||
             	itemsToPublish[i].description.indexOf('peanut')>-1 || 
@@ -241,11 +243,11 @@ function getNewAlerts(){
 	            }
             }
             
-            // Celery 
+            / Celery 
             if (itemsToPublish[i].description.indexOf('celery')>-1 || itemsToPublish[i].description.indexOf('Celery')>-1) {
                 publishToTwitter(twitterCeleryAlerts, itemsToPublish[i]);
             }
-            
+            */
             
         }
         
