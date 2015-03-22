@@ -285,7 +285,7 @@ function getNewAlerts(){
             };
             
             
-f            // Gluten
+            // Gluten
 			if (
             	twitterGlutenAlertsEnabled == true && (
             		itemsToPublish[i].description.indexOf('gluten')>-1 || 
