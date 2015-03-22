@@ -2,9 +2,9 @@
   "name": "allergen-alerts",
   "version": "0.1.0",
   "description": "Publishing notifications of allergen contamination to Twitter.",
-  "main": "./rss_app.js",
+  "main": "./authentication.js",
   "scripts": {
-    "start": "node rss_app.js"
+    "start": "node authentication.js"
   },
   "dependencies": {
     "htmlparser": "~1.7.7",
@@ -28,5 +28,6 @@
     "url": "https://github.com/martian-a/hackberry/issues"
   },
   "devDependencies": {},
-  "license": "GNU"
+  "license": "GNU",
+  "homepage": "https://github.com/martian-a/hackberry"
 }
