@@ -24,7 +24,7 @@ var serverPort = process.env['PORT'];
 /*
 	URL to which Twitter sends the OAuth credentials
 */ 
-var urlCallback = 'http://' + serverDomain +  ':'+ serverPort + '/request/token/access';
+var urlCallback = 'http://' + serverDomain + '/request/token/access';
 
 /*
 	Twitter URL for requesting that the user authorise your app
