@@ -47,9 +47,6 @@ http.createServer(function (req, res) {
 	  		console.log(url_parts.pathname);
 	  
 			switch(url_parts.pathname) {
-				case '/':
-					parrot();
-					break;
 				case '/request/token/oauth':
 					requestOauthToken(res);
 					return;
@@ -67,10 +64,6 @@ http.createServer(function (req, res) {
 		2000
 	);
 }).listen(8000, 'http://' + process.env['TWITTER_ALLERGEN_ALERTS_CALLBACK_DOMAIN']);
-
-function parrot() {
-	console.log("Who's a pretty boy?");
-};
 
 
 function requestOauthToken(res) {
