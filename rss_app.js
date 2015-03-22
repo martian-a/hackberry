@@ -85,7 +85,13 @@ var twitterCeleryAlerts = new Twit({
       , access_token_secret:  process.env['TWITTER_CELERY_ALERTS_ACCESS_SECRET']
 });
 
-
+var twitterSulphiteAlertsEnabled = true;
+var twitterSulphiteAlerts = new Twit({
+    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
+  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
+      , access_token:         process.env['TWITTER_SULPHITE_ALERTS_ACCESS_TOKEN']
+      , access_token_secret:  process.env['TWITTER_SULPHITE_ALERTS_ACCESS_SECRET']
+});
 
 // Get date of latest posted article
 var latestPostedItemDate = getLatestPostedItemDate();
@@ -304,6 +310,18 @@ function getNewAlerts(){
             	)
             ) { 
                 publishToTwitter(twitterCeleryAlerts, itemsToPublish[i]);
+            };
+            
+            // Sulphites 
+			if (
+            	twitterSulphiteAlertsEnabled == true && (
+            		itemsToPublish[i].description.indexOf('sulphite')>-1 || 
+            		itemsToPublish[i].description.indexOf('Sulphite')>-1 ||
+            		itemsToPublish[i].description.indexOf('sulphur')>-1 || 
+            		itemsToPublish[i].description.indexOf('Sulpher')>-1 
+            	)
+            ) { 
+                publishToTwitter(twitterSulphiteAlerts, itemsToPublish[i]);
             };
             
         }
