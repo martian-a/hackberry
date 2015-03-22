@@ -14,12 +14,21 @@ var rssUrl = 'http://www.food.gov.uk/news-updates/allergynews-rss';
 var oneMinute = (1000 * 60);
 var intervalLength = (5 * oneMinute);
 
-var twitter = new Twit({
+var twitterAllergenAlerts = new Twit({
     	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
   	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
       , access_token:         process.env['TWITTER_ALLERGEN_ALERTS_ACCESS_TOKEN']
       , access_token_secret:  process.env['TWITTER_ALLERGEN_ALERTS_ACCESS_SECRET']
 });
+
+/*
+var twitterGlutenAlerts = new Twit({
+    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
+  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
+      , access_token:         process.env['TWITTER_GLUTEN_ALERTS_ACCESS_TOKEN']
+      , access_token_secret:  process.env['TWITTER_GLUTEN_ALERTS_ACCESS_SECRET']
+});
+*/
 
 // Get date of latest posted article
 var latestPostedItemDate = getLatestPostedItemDate();
@@ -80,7 +89,7 @@ function publishToTwitter(item){
     var tweet = item.title + ' ' + item.link;
     console.log('publishing to twitter'+item.description);
     console.log('tweet: '+tweet);
-    twitter.post('statuses/update', { status: tweet }, function(err, data, response) {
+    twitterAllergenAlerts.post('statuses/update', { status: tweet }, function(err, data, response) {
 		     if (err)
 			 console.log(err);
 		     console.log(data);
