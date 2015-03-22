@@ -19,7 +19,7 @@ var appSecret = process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
 var urlRequestToken = 'https://api.twitter.com/oauth/request_token';
 
 var serverDomain = process.env['TWITTER_ALLERGEN_ALERTS_CALLBACK_DOMAIN'];
-var serverPort = process.env['TWITTER_ALLERGEN_ALERTS_CALLBACK_PORT'];
+var serverPort = process.env['PORT'];
 
 /*
 	URL to which Twitter sends the OAuth credentials
