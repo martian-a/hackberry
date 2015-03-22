@@ -1,1 +1,1 @@
-web: node authentication.js
+web: node rss_app.js
