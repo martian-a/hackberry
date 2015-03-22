@@ -18,10 +18,13 @@ var appSecret = process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
 */
 var urlRequestToken = 'https://api.twitter.com/oauth/request_token';
 
+var serverDomain = process.env['TWITTER_ALLERGEN_ALERTS_CALLBACK_DOMAIN'];
+var serverPort = process.env['TWITTER_ALLERGEN_ALERTS_CALLBACK_PORT'];
+
 /*
 	URL to which Twitter sends the OAuth credentials
 */ 
-var urlCallback = 'http://' + process.env['TWITTER_ALLERGEN_ALERTS_CALLBACK_DOMAIN'] + ':8000/request/token/access';
+var urlCallback = 'http://' + serverDomain +  ':'+ serverPort + '/request/token/access';
 
 /*
 	Twitter URL for requesting that the user authorise your app
@@ -63,7 +66,7 @@ http.createServer(function (req, res) {
 		}, 
 		2000
 	);
-}).listen(8000, 'http://' + process.env['TWITTER_ALLERGEN_ALERTS_CALLBACK_DOMAIN']);
+}).listen(serverPort);
 
 
 function requestOauthToken(res) {
