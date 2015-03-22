@@ -21,7 +21,39 @@ var twitterAllergenAlerts = new Twit({
       , access_token_secret:  process.env['TWITTER_ALLERGEN_ALERTS_ACCESS_SECRET']
 });
 
-/*
+var twitterEggAlertsEnabled = false;
+var twitterEggAlerts = new Twit({
+    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
+  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
+      , access_token:         process.env['TWITTER_EGG_ALERTS_ACCESS_TOKEN']
+      , access_token_secret:  process.env['TWITTER_EGG_ALERTS_ACCESS_SECRET']
+});
+
+var twitterMilkAlertsEnabled = false;
+var twitterMilkAlerts = new Twit({
+    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
+  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
+      , access_token:         process.env['TWITTER_MILK_ALERTS_ACCESS_TOKEN']
+      , access_token_secret:  process.env['TWITTER_MILK_ALERTS_ACCESS_SECRET']
+});
+
+var twitterFishAlertsEnabled = false;
+var twitterFishAlerts = new Twit({
+    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
+  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
+      , access_token:         process.env['TWITTER_FISH_ALERTS_ACCESS_TOKEN']
+      , access_token_secret:  process.env['TWITTER_FISH_ALERTS_ACCESS_SECRET']
+});
+
+var twitterCrustaceanAlertsEnabled = false;
+var twitterCrustaceanAlerts = new Twit({
+    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
+  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
+      , access_token:         process.env['TWITTER_CRUSTACEAN_ALERTS_ACCESS_TOKEN']
+      , access_token_secret:  process.env['TWITTER_CRUSTACEAN_ALERTS_ACCESS_SECRET']
+});
+
+var twitterGlutenAlertsEnabled = false;
 var twitterGlutenAlerts = new Twit({
     	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
   	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
@@ -29,6 +61,7 @@ var twitterGlutenAlerts = new Twit({
       , access_token_secret:  process.env['TWITTER_GLUTEN_ALERTS_ACCESS_SECRET']
 });
 
+var twitterNutAlertsEnabled = false;
 var twitterNutAlerts = new Twit({
     	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
   	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
@@ -36,6 +69,7 @@ var twitterNutAlerts = new Twit({
       , access_token_secret:  process.env['TWITTER_NUT_ALERTS_ACCESS_SECRET']
 });
 
+var twitterPeanutAlertsEnabled = false;
 var twitterPeanutAlerts = new Twit({
     	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
   	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
@@ -43,19 +77,15 @@ var twitterPeanutAlerts = new Twit({
       , access_token_secret:  process.env['TWITTER_PEANUT_ALERTS_ACCESS_SECRET']
 });
 
+var twitterCeleryAlertsEnabled = false;
 var twitterCeleryAlerts = new Twit({
     	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
   	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
       , access_token:         process.env['TWITTER_CELERY_ALERTS_ACCESS_TOKEN']
       , access_token_secret:  process.env['TWITTER_CELERY_ALERTS_ACCESS_SECRET']
 });
-*/
-var twitterFishAlerts = new Twit({
-    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
-  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
-      , access_token:         process.env['TWITTER_FISH_ALERTS_ACCESS_TOKEN']
-      , access_token_secret:  process.env['TWITTER_FISH_ALERTS_ACCESS_SECRET']
-});
+
+
 
 // Get date of latest posted article
 var latestPostedItemDate = getLatestPostedItemDate();
@@ -180,74 +210,101 @@ function getNewAlerts(){
             */
             
             
-            /* Egg
-            if (itemsToPublish[i].description.indexOf('egg')>-1 || itemsToPublish[i].description.indexOf('Egg')>-1) {
+            // Egg
+            if (
+            	twitterEggAlertsEnabled == true && (
+            		itemsToPublish[i].description.indexOf('egg')>-1 || 
+            		itemsToPublish[i].description.indexOf('Egg')>-1
+            	)
+            ) {
                 publishToTwitter(twitterEggAlerts, itemsToPublish[i]);
-            }
+            };
             
-            / Milk 
-            if (itemsToPublish[i].description.indexOf('milk')>-1 || itemsToPublish[i].description.indexOf('Milk')>-1) {
+            
+            // Milk 
+            if (
+            	twitterMilkAlertsEnabled == true && (
+            		itemsToPublish[i].description.indexOf('milk')>-1 || 
+            		itemsToPublish[i].description.indexOf('Milk')>-1
+            	)
+            ) {            
                 publishToTwitter(twitterMilkAlerts, itemsToPublish[i]);
-            }
-            */
+            };
+                       
             
             // Fish 
-            // if (itemsToPublish[i].description.indexOf('fish')>-1 || itemsToPublish[i].description.indexOf('Fish')>-1) {
+            if (
+            	twitterFishAlertsEnabled == true && (
+            		itemsToPublish[i].description.indexOf('fish')>-1 || 
+            		itemsToPublish[i].description.indexOf('Fish')>-1
+            	)
+            ) { 
                 publishToTwitter(twitterFishAlerts, itemsToPublish[i]);
-            //}
+            };
+            
             
             /* Crustaceans
                Including crab, lobster, crayfish, shrimp, prawn.
-            
-            if (
-            	itemsToPublish[i].description.indexOf('crustacean')>-1 ||
-            	itemsToPublish[i].description.indexOf('Crustacean')>-1 || 
-            	itemsToPublish[i].description.indexOf('crab')>-1 ||
-            	itemsToPublish[i].description.indexOf('Crab')>-1 ||
-            	itemsToPublish[i].description.indexOf('crayfish')>-1 ||
-            	itemsToPublish[i].description.indexOf('Crayfish')>-1 ||
-            	itemsToPublish[i].description.indexOf('shrimp')>-1 ||
-            	itemsToPublish[i].description.indexOf('Shrimp')>-1 ||
-            	itemsToPublish[i].description.indexOf('prawn')>-1 ||
-            	itemsToPublish[i].description.indexOf('Prawn')>-1
-            ) {
-                
-                / Generic
-                publishToTwitter(twitterNutAlerts, itemsToPublish[i]);
-                
-                / Peanut 
-                if (itemsToPublish[i].description.indexOf('peanut')>-1 || itemsToPublish[i].description.indexOf('Peanut')>-1) {
-	                publishToTwitter(twitterPeanutAlerts, itemsToPublish[i]);
-	            }
-            }
-            
-            / Gluten
-            if (itemsToPublish[i].description.indexOf('gluten')>-1 || itemsToPublish[i].description.indexOf('Gluten')>-1) {
-                publishToTwitter(twitterGlutenAlerts, itemsToPublish[i]);
-            }
-            
-            / Nuts
-            if (
-            	itemsToPublish[i].description.indexOf('nut')>-1 ||
-            	itemsToPublish[i].description.indexOf('peanut')>-1 || 
-            	itemsToPublish[i].description.indexOf('Nut')>-1 ||
-            	itemsToPublish[i].description.indexOf('Peanut')>-1
-            ) {
-                
-                // Generic
-                publishToTwitter(twitterNutAlerts, itemsToPublish[i]);
-                
-                // Peanut 
-                if (itemsToPublish[i].description.indexOf('peanut')>-1 || itemsToPublish[i].description.indexOf('Peanut')>-1) {
-	                publishToTwitter(twitterPeanutAlerts, itemsToPublish[i]);
-	            }
-            }
-            
-            / Celery 
-            if (itemsToPublish[i].description.indexOf('celery')>-1 || itemsToPublish[i].description.indexOf('Celery')>-1) {
-                publishToTwitter(twitterCeleryAlerts, itemsToPublish[i]);
-            }
             */
+			if (
+            	twitterCrustaceanAlertsEnabled == true && (
+            		itemsToPublish[i].description.indexOf('crustacean')>-1 ||
+	            	itemsToPublish[i].description.indexOf('Crustacean')>-1 || 
+	            	itemsToPublish[i].description.indexOf('crab')>-1 ||
+	            	itemsToPublish[i].description.indexOf('Crab')>-1 ||
+	            	itemsToPublish[i].description.indexOf('crayfish')>-1 ||
+	            	itemsToPublish[i].description.indexOf('Crayfish')>-1 ||
+	            	itemsToPublish[i].description.indexOf('shrimp')>-1 ||
+	            	itemsToPublish[i].description.indexOf('Shrimp')>-1 ||
+	            	itemsToPublish[i].description.indexOf('prawn')>-1 ||
+	            	itemsToPublish[i].description.indexOf('Prawn')>-1
+            	)
+            ) {                
+				publishToTwitter(twitterCrustaceanAlerts, itemsToPublish[i]);
+            };
+            
+            
+            // Gluten
+			if (
+            	twitterGlutenAlertsEnabled == true && (
+            		itemsToPublish[i].description.indexOf('gluten')>-1 || 
+            		itemsToPublish[i].description.indexOf('Gluten')>-1
+            	)
+            ) { 
+                publishToTwitter(twitterGlutenAlerts, itemsToPublish[i]);
+            };
+            
+            // Nuts
+			if (
+            	twitterNutAlertsEnabled == true && (
+            		itemsToPublish[i].description.indexOf('nut')>-1 || 
+            		itemsToPublish[i].description.indexOf('Nut')>-1 ||
+            		itemsToPublish[i].description.indexOf('peanut')>-1 || 
+            		itemsToPublish[i].description.indexOf('Peanut')>-1
+            	) 
+            ) {                
+                publishToTwitter(twitterNutAlerts, itemsToPublish[i]);                
+            };
+            
+            // Peanuts 
+			if (
+        		twitterPeanutAlertsEnabled == true && (
+            		itemsToPublish[i].description.indexOf('peanut')>-1 || 
+            		itemsToPublish[i].description.indexOf('Peanut')>-1
+            	)
+            ) {
+                publishToTwitter(twitterPeanutAlerts, itemsToPublish[i]);
+            };
+            
+            // Celery 
+			if (
+            	twitterCeleryAlertsEnabled == true && (
+            		itemsToPublish[i].description.indexOf('celery')>-1 || 
+            		itemsToPublish[i].description.indexOf('Celery')>-1
+            	)
+            ) { 
+                publishToTwitter(twitterCeleryAlerts, itemsToPublish[i]);
+            };
             
         }
         
