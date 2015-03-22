@@ -46,47 +46,59 @@ var twitterFishAlerts = new Twit({
 });
 
 var twitterCrustaceanAlertsEnabled = false;
-var twitterCrustaceanAlerts = new Twit({
+var twitterCrustaceanAlerts;
+if (twitterCrustaceanAlertsEnabled == true) {
+	twitterCrustaceanAlerts = new Twit({
     	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
   	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
       , access_token:         process.env['TWITTER_CRUSTACEAN_ALERTS_ACCESS_TOKEN']
       , access_token_secret:  process.env['TWITTER_CRUSTACEAN_ALERTS_ACCESS_SECRET']
-});
+	});
+};
 
 var twitterGlutenAlertsEnabled = false;
-var twitterGlutenAlerts = new Twit({
+var twitterGlutenAlerts;
+if (twitterGlutenAlertsEnabled == true) {
+	twitterGlutenAlerts = new Twit({
     	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
   	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
       , access_token:         process.env['TWITTER_GLUTEN_ALERTS_ACCESS_TOKEN']
       , access_token_secret:  process.env['TWITTER_GLUTEN_ALERTS_ACCESS_SECRET']
-});
+	});
+};
 
 var twitterNutAlertsEnabled = false;
-var twitterNutAlerts = new Twit({
+var twitterNutAlerts;
+if (twitterNutAlertsEnabled == true) {
+	twitterNutAlerts = new Twit({
     	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
   	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
       , access_token:         process.env['TWITTER_NUT_ALERTS_ACCESS_TOKEN']
       , access_token_secret:  process.env['TWITTER_NUT_ALERTS_ACCESS_SECRET']
 });
+};
 
 var twitterPeanutAlertsEnabled = false;
-var twitterPeanutAlerts = new Twit({
+var twitterPeanutAlerts;
+if (twitterPeanutAlertsEnabled == true) {
+	twitterPeanutAlerts = new Twit({
     	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
   	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
       , access_token:         process.env['TWITTER_PEANUT_ALERTS_ACCESS_TOKEN']
       , access_token_secret:  process.env['TWITTER_PEANUT_ALERTS_ACCESS_SECRET']
 });
+};
 
 var twitterCeleryAlertsEnabled = false;
-var twitterCeleryAlerts = new Twit({
+var twitterCeleryAlerts;
+if (twitterCeleryAlertsEnabled == true) {
+	twitterCeleryAlerts = new Twit({
     	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
   	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
       , access_token:         process.env['TWITTER_CELERY_ALERTS_ACCESS_TOKEN']
       , access_token_secret:  process.env['TWITTER_CELERY_ALERTS_ACCESS_SECRET']
 });
-
-console.log(process.env['TWITTER_SULPHITE_ALERTS_ACCESS_TOKEN']);
-console.log(process.env['TWITTER_SULPHITE_ALERTS_ACCESS_SECRET']);
+};
 
 var twitterSulphiteAlertsEnabled = true;
 var twitterSulphiteAlerts = new Twit({
