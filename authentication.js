@@ -71,10 +71,10 @@ http.createServer(function (req, res) {
 			switch(url_parts.pathname) {
 				case '/request/token/oauth':
 					passport.authenticate('twitter');
-					break;
+					return;
 				case '/request/token/access':
 					passport.authenticate('twitter', { successRedirect: '/success', failureRedirect: '/login'});
-					break;				
+					return;				
 				default:
 					console.log("oh dear, 404");
 			}  		
