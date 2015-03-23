@@ -118,13 +118,11 @@ crustaceanAlerts.initTwitter(
 */
 var eggAlerts = new Feed(new Array("egg"));
 twitterApp.addFeed(eggAlerts);
-/*
 eggAlerts.initTwitter(
 	twitterApp,
 	process.env['TWITTER_EGG_ALERTS_ACCESS_TOKEN'], 
 	process.env['TWITTER_EGG_ALERTS_ACCESS_SECRET']
 );
-*/
 
 
 /*
@@ -146,13 +144,11 @@ fishAlerts.initTwitter(
 */
 var glutenAlerts = new Feed(new Array("gluten"));
 twitterApp.addFeed(glutenAlerts);
-/*
 glutenAlerts.initTwitter(
 	twitterApp,
 	process.env['TWITTER_GLUTEN_ALERTS_ACCESS_TOKEN'], 
 	process.env['TWITTER_GLUTEN_ALERTS_ACCESS_SECRET']
 );
-*/
 
 
 /*
@@ -176,13 +172,11 @@ lupinAlerts.initTwitter(
 */
 var milkAlerts = new Feed(new Array("milk"));
 twitterApp.addFeed(milkAlerts);
-/*
 milkAlerts.initTwitter(
 	twitterApp,
 	process.env['TWITTER_MILK_ALERTS_ACCESS_TOKEN'], 
 	process.env['TWITTER_MILK_ALERTS_ACCESS_SECRET']
 );
-*/
 
 
 /*
@@ -221,13 +215,11 @@ mustardAlerts.initTwitter(
 */
 var nutAlerts = new Feed(new Array("nut", "cashew", "almond"));
 twitterApp.addFeed(nutAlerts);
-/*
 nutAlerts.initTwitter(
 	twitterApp,
 	process.env['TWITTER_NUT_ALERTS_ACCESS_TOKEN'], 
 	process.env['TWITTER_NUT_ALERTS_ACCESS_SECRET']
 );
-*/
 
 
 /*
@@ -236,13 +228,11 @@ nutAlerts.initTwitter(
 */
 var peanutAlerts = new Feed(new Array("peanut"));
 twitterApp.addFeed(peanutAlerts);
-/*
 peanutAlerts.initTwitter(
 	twitterApp,
 	process.env['TWITTER_PEANUT_ALERTS_ACCESS_TOKEN'], 
 	process.env['TWITTER_PEANUT_ALERTS_ACCESS_SECRET']
 );
-*/
 
 
 /*
@@ -266,13 +256,11 @@ sesameAlerts.initTwitter(
 */
 var soyaAlerts = new Feed(new Array("soya"));
 twitterApp.addFeed(soyaAlerts);
-/*
 soyaAlerts.initTwitter(
 	twitterApp,
 	process.env['TWITTER_SOYA_ALERTS_ACCESS_TOKEN'], 
 	process.env['TWITTER_SOYA_ALERTS_ACCESS_SECRET']
 );
-*/
 
 
 /*
