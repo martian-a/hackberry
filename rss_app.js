@@ -101,7 +101,7 @@ celeryAlerts.initTwitter(
 	Twitter Account: UK Crustacean Alerts
 	TODO: https://twitter.com/ukcrustaceanalerts
 */
-var crustaceanAlerts = new Feed(new Array("crustacean", "shellfish", "crab", "crayfish", "prawn", "shrimp"));
+var crustaceanAlerts = new Feed(new Array("crustacean", "shellfish", "crab", "crayfish", "prawn", "shrimp", "scampi"));
 twitterApp.addFeed(crustaceanAlerts);
 /*
 crustaceanAlerts.initTwitter(
@@ -189,7 +189,7 @@ milkAlerts.initTwitter(
 	Twitter Account: UK Mollusc Alerts
 	TODO: https://twitter.com/molluscalerts
 */
-var molluscAlerts = new Feed(new Array("mollusc"));
+var molluscAlerts = new Feed(new Array("mollusc", "snail", "squid", "whelk"));
 twitterApp.addFeed(molluscAlerts);
 /*
 molluscAlerts.initTwitter(
@@ -219,7 +219,7 @@ mustardAlerts.initTwitter(
 	Twitter Account: UK Nut Alerts
 	https://twitter.com/uknutalerts
 */
-var nutAlerts = new Feed(new Array("nut"));
+var nutAlerts = new Feed(new Array("nut", "cashew", "almond"));
 twitterApp.addFeed(nutAlerts);
 /*
 nutAlerts.initTwitter(
@@ -292,7 +292,7 @@ sulphiteAlerts.initTwitter(
 	Twitter Account: UK Tree Nut Alerts
 	TODO: https://twitter.com/treenutalerts
 */
-var treeNutAlerts = new Feed(new Array("nut"));
+var treeNutAlerts = new Feed(new Array("nut", "cashew", "almond"));
 twitterApp.addFeed(treeNutAlerts);
 /*
 treeNutAlerts.initTwitter(
