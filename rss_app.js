@@ -2,7 +2,11 @@ var request = require('request'),
 url = require('url'),
 htmlparser = require('htmlparser'),
 fs = require('fs'),
-Twit = require('twit');
+TwitterPublishingApp = require('./lib/twitterPublishingApp'),
+Feed = require('./lib/feed'),
+xpath = require('xpath'),
+dom = require('xmldom').DOMParser,
+xmlentities = require("xml-entities");
 
 // Config variables
 var rssUrl = 'http://www.food.gov.uk/news-updates/allergynews-rss';
@@ -12,101 +16,269 @@ var rssUrl = 'http://www.food.gov.uk/news-updates/allergynews-rss';
 	(milliseconds)
 */
 var oneMinute = (1000 * 60);
-var intervalLength = (5 * oneMinute);
+var intervalLength = (1 * oneMinute);
 
-var twitterAllergenAlerts = new Twit({
-    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
-  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
-      , access_token:         process.env['TWITTER_ALLERGEN_ALERTS_ACCESS_TOKEN']
-      , access_token_secret:  process.env['TWITTER_ALLERGEN_ALERTS_ACCESS_SECRET']
-});
 
-var twitterEggAlertsEnabled = false;
-var twitterEggAlerts = new Twit({
-    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
-  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
-      , access_token:         process.env['TWITTER_EGG_ALERTS_ACCESS_TOKEN']
-      , access_token_secret:  process.env['TWITTER_EGG_ALERTS_ACCESS_SECRET']
-});
+/*
+	== Feeds/Allergens ==
+	
+	- Generic
+	- Celery
+	- Crustaceans
+	- Egg
+	- Fish
+	- Gluten
+	- Lupin
+	- Milk
+	- Moluscs
+	- Mustard
+	- Nuts
+	     - Peanuts (ground nuts)
+	     - Tree nuts
+	- Sesame Seeds
+	- Soya
+	- Sulphites
 
-var twitterMilkAlertsEnabled = false;
-var twitterMilkAlerts = new Twit({
-    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
-  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
-      , access_token:         process.env['TWITTER_MILK_ALERTS_ACCESS_TOKEN']
-      , access_token_secret:  process.env['TWITTER_MILK_ALERTS_ACCESS_SECRET']
-});
+*/
 
-var twitterFishAlertsEnabled = false;
-var twitterFishAlerts = new Twit({
-    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
-  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
-      , access_token:         process.env['TWITTER_FISH_ALERTS_ACCESS_TOKEN']
-      , access_token_secret:  process.env['TWITTER_FISH_ALERTS_ACCESS_SECRET']
-});
+var twitterApp = new TwitterPublishingApp(
+	process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY'],
+	process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
+);
 
-var twitterCrustaceanAlertsEnabled = false;
-var twitterCrustaceanAlerts;
-if (twitterCrustaceanAlertsEnabled == true) {
-	twitterCrustaceanAlerts = new Twit({
-    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
-  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
-      , access_token:         process.env['TWITTER_CRUSTACEAN_ALERTS_ACCESS_TOKEN']
-      , access_token_secret:  process.env['TWITTER_CRUSTACEAN_ALERTS_ACCESS_SECRET']
-	});
-};
+/*
+	Twitter Account: Generic Allergen Alerts
+	https://twitter.com/allergenalerts
+*/
+var allAlerts = new Feed();
+allAlerts.initTwitter(
+	twitterApp, 
+	process.env['TWITTER_ALLERGEN_ALERTS_ACCESS_TOKEN'], 
+	process.env['TWITTER_ALLERGEN_ALERTS_ACCESS_SECRET']
+);
 
-var twitterGlutenAlertsEnabled = false;
-var twitterGlutenAlerts;
-if (twitterGlutenAlertsEnabled == true) {
-	twitterGlutenAlerts = new Twit({
-    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
-  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
-      , access_token:         process.env['TWITTER_GLUTEN_ALERTS_ACCESS_TOKEN']
-      , access_token_secret:  process.env['TWITTER_GLUTEN_ALERTS_ACCESS_SECRET']
-	});
-};
 
-var twitterNutAlertsEnabled = true;
-var twitterNutAlerts;
-if (twitterNutAlertsEnabled == true) {
-	twitterNutAlerts = new Twit({
-    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
-  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
-      , access_token:         process.env['TWITTER_NUT_ALERTS_ACCESS_TOKEN']
-      , access_token_secret:  process.env['TWITTER_NUT_ALERTS_ACCESS_SECRET']
-});
-};
+/*
+	Twitter Account: UK Celery Alerts
+	TODO: https://twitter.com/ukceleryalerts
+*/
+var celeryAlerts = new Feed(new Array("celery", "celeriac"));
+twitterApp.addFeed(celeryAlerts);
+/*
+celeryAlerts.initTwitter(
+	twitterApp,
+	process.env['TWITTER_CELERY_ALERTS_ACCESS_TOKEN'], 
+	process.env['TWITTER_CELERY_ALERTS_ACCESS_SECRET']
+);
+*/
 
-var twitterPeanutAlertsEnabled = false;
-var twitterPeanutAlerts;
-if (twitterPeanutAlertsEnabled == true) {
-	twitterPeanutAlerts = new Twit({
-    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
-  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
-      , access_token:         process.env['TWITTER_PEANUT_ALERTS_ACCESS_TOKEN']
-      , access_token_secret:  process.env['TWITTER_PEANUT_ALERTS_ACCESS_SECRET']
-});
-};
 
-var twitterCeleryAlertsEnabled = false;
-var twitterCeleryAlerts;
-if (twitterCeleryAlertsEnabled == true) {
-	twitterCeleryAlerts = new Twit({
-    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
-  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
-      , access_token:         process.env['TWITTER_CELERY_ALERTS_ACCESS_TOKEN']
-      , access_token_secret:  process.env['TWITTER_CELERY_ALERTS_ACCESS_SECRET']
-});
-};
+/*
+	Twitter Account: UK Crustacean Alerts
+	TODO: https://twitter.com/ukcrustaceanalerts
+*/
+var crustaceanAlerts = new Feed(new Array("crustacean", "shellfish", "crab", "crayfish", "prawn", "shrimp"));
+twitterApp.addFeed(crustaceanAlerts);
+/*
+crustaceanAlerts.initTwitter(
+	twitterApp,
+	process.env['TWITTER_CRUSTACEAN_ALERTS_ACCESS_TOKEN'], 
+	process.env['TWITTER_CRUSTACEAN_ALERTS_ACCESS_SECRET']
+);
+*/
 
-var twitterSulphiteAlertsEnabled = true;
-var twitterSulphiteAlerts = new Twit({
-    	consumer_key:         process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_KEY']
-  	  , consumer_secret:      process.env['TWITTER_ALLERGEN_ALERTS_CONSUMER_SECRET']
-      , access_token:         process.env['TWITTER_SULPHITE_ALERTS_ACCESS_TOKEN']
-      , access_token_secret:  process.env['TWITTER_SULPHITE_ALERTS_ACCESS_SECRET']
-});
+
+/*
+	Twitter Account: UK Egg Alerts
+	https://twitter.com/ukeggalerts
+*/
+var eggAlerts = new Feed(new Array("egg"));
+twitterApp.addFeed(eggAlerts);
+/*
+eggAlerts.initTwitter(
+	twitterApp,
+	process.env['TWITTER_EGG_ALERTS_ACCESS_TOKEN'], 
+	process.env['TWITTER_EGG_ALERTS_ACCESS_SECRET']
+);
+*/
+
+
+/*
+	Twitter Account: UK Fish Alerts
+	https://twitter.com/ukfishalerts
+*/
+var fishAlerts = new Feed(new Array("fish"));
+twitterApp.addFeed(fishAlerts);
+fishAlerts.initTwitter(
+	twitterApp,
+	process.env['TWITTER_FISH_ALERTS_ACCESS_TOKEN'],
+	process.env['TWITTER_FISH_ALERTS_ACCESS_SECRET']
+);
+
+
+/*
+	Twitter Account: UK Gluten Alerts
+	https://twitter.com/ukglutenalerts
+*/
+var glutenAlerts = new Feed(new Array("gluten"));
+twitterApp.addFeed(glutenAlerts);
+/*
+glutenAlerts.initTwitter(
+	twitterApp,
+	process.env['TWITTER_GLUTEN_ALERTS_ACCESS_TOKEN'], 
+	process.env['TWITTER_GLUTEN_ALERTS_ACCESS_SECRET']
+);
+*/
+
+
+/*
+	Twitter Account: UK Lupin Alerts
+	TODO: https://twitter.com/uklupinalerts
+*/
+var lupinAlerts = new Feed(new Array("lupin"));
+twitterApp.addFeed(lupinAlerts);
+/*
+lupinAlerts.initTwitter(
+	twitterApp,
+	process.env['TWITTER_LUPIN_ALERTS_ACCESS_TOKEN'], 
+	process.env['TWITTER_LUPIN_ALERTS_ACCESS_SECRET']
+);
+*/
+
+
+/*
+	Twitter Account: UK Milk Alerts
+	https://twitter.com/ukmilkalerts
+*/
+var milkAlerts = new Feed(new Array("milk"));
+twitterApp.addFeed(milkAlerts);
+/*
+milkAlerts.initTwitter(
+	twitterApp,
+	process.env['TWITTER_MILK_ALERTS_ACCESS_TOKEN'], 
+	process.env['TWITTER_MILK_ALERTS_ACCESS_SECRET']
+);
+*/
+
+
+/*
+	Twitter Account: UK Mollusc Alerts
+	TODO: https://twitter.com/molluscalerts
+*/
+var molluscAlerts = new Feed(new Array("mollusc"));
+twitterApp.addFeed(molluscAlerts);
+/*
+molluscAlerts.initTwitter(
+	twitterApp,
+	process.env['TWITTER_MOLLUSC_ALERTS_ACCESS_TOKEN'], 
+	process.env['TWITTER_MOLLUSC_ALERTS_ACCESS_SECRET']
+);
+*/
+
+
+/*
+	Twitter Account: UK Mustard Alerts
+	TODO: https://twitter.com/ukmustardalerts
+*/
+var mustardAlerts = new Feed(new Array("mustard"));
+twitterApp.addFeed(mustardAlerts);
+/*
+mustardAlerts.initTwitter(
+	twitterApp,
+	process.env['TWITTER_MUSTARD_ALERTS_ACCESS_TOKEN'], 
+	process.env['TWITTER_MUSTARD_ALERTS_ACCESS_SECRET']
+);
+*/
+
+
+/*
+	Twitter Account: UK Nut Alerts
+	https://twitter.com/uknutalerts
+*/
+var nutAlerts = new Feed(new Array("nut"));
+twitterApp.addFeed(nutAlerts);
+/*
+nutAlerts.initTwitter(
+	twitterApp,
+	process.env['TWITTER_NUT_ALERTS_ACCESS_TOKEN'], 
+	process.env['TWITTER_NUT_ALERTS_ACCESS_SECRET']
+);
+*/
+
+
+/*
+	Twitter Account: UK Peanut Alerts
+	TODO: https://twitter.com/ukpeanutalerts
+*/
+var peanutAlerts = new Feed(new Array("peanut"));
+twitterApp.addFeed(peanutAlerts);
+/*
+peanutAlerts.initTwitter(
+	twitterApp,
+	process.env['TWITTER_PEANUT_ALERTS_ACCESS_TOKEN'], 
+	process.env['TWITTER_PEANUT_ALERTS_ACCESS_SECRET']
+);
+*/
+
+
+/*
+	Twitter Account: UK Sesame Seed Alerts
+	TODO: https://twitter.com/uksesamealerts
+*/
+var sesameAlerts = new Feed(new Array("sesame"));
+twitterApp.addFeed(sesameAlerts);
+/*
+sesameAlerts.initTwitter(
+	twitterApp,
+	process.env['TWITTER_SESAME_SEED_ALERTS_ACCESS_TOKEN'], 
+	process.env['TWITTER_SESAME_SEED_ALERTS_ACCESS_SECRET']
+);
+*/
+
+
+/*
+	Twitter Account: UK Soya Alerts
+	TODO: https://twitter.com/uksoyaalerts
+*/
+var soyaAlerts = new Feed(new Array("soya"));
+twitterApp.addFeed(soyaAlerts);
+/*
+soyaAlerts.initTwitter(
+	twitterApp,
+	process.env['TWITTER_SOYA_ALERTS_ACCESS_TOKEN'], 
+	process.env['TWITTER_SOYA_ALERTS_ACCESS_SECRET']
+);
+*/
+
+
+/*
+	Twitter Account: UK Sulphites Alerts
+	https://twitter.com/ukso2alerts
+*/
+var sulphiteAlerts = new Feed(new Array("sulphite", "sulphur"));
+twitterApp.addFeed(sulphiteAlerts);
+sulphiteAlerts.initTwitter(
+	twitterApp,
+	process.env['TWITTER_SULPHITE_ALERTS_ACCESS_TOKEN'], 
+	process.env['TWITTER_SULPHITE_ALERTS_ACCESS_SECRET']
+);
+
+
+/*
+	Twitter Account: UK Tree Nut Alerts
+	TODO: https://twitter.com/treenutalerts
+*/
+var treeNutAlerts = new Feed(new Array("nut"));
+twitterApp.addFeed(treeNutAlerts);
+/*
+treeNutAlerts.initTwitter(
+	twitterApp,
+	process.env['TWITTER_TREE_NUT_ALERTS_ACCESS_TOKEN'], 
+	process.env['TWITTER_TREE_NUT_ALERTS_ACCESS_SECRET']
+);
+*/
+
+console.log('Total feeds: ' + twitterApp.getTotalFeeds());
 
 // Get date of latest posted article
 var latestPostedItemDate = getLatestPostedItemDate();
@@ -163,15 +335,29 @@ function setLatestPostedItemDate(date){
 }
 
 // post item to twitter
-function publishToTwitter(twitterAccount, item){
-    var tweet = item.title + ' ' + item.link;
-    console.log('publishing to twitter'+item.description);
-    console.log('tweet: '+tweet);
-    twitterAccount.post('statuses/update', { status: tweet }, function(err, data, response) {
-		     if (err)
-			 console.log(err);
-		     console.log(data);
-		 });
+function publishToTwitter(feed, item){
+    
+    console.log('Tweeting.');
+    
+    var title = item.title;
+    var linkLength = 23;
+    if (item.link.length < linkLength) {
+    	linkLength = item.link.length;
+    }
+    
+    if ((linkLength + 1 + title.length) > 140) {
+    	title = title.substring(0, (138 - linkLength)) + '…';
+    	console.log('Title shortened from:\n     ' + item.title + '\nto:\n     ' + title);
+    }
+    
+    var tweet = title + ' ' + item.link;
+    
+    feed.twitterAccount.post('statuses/update', { status: tweet }, function(err, data, response) {
+		     if (err) {
+			 	console.log(err);
+			 	console.log(tweet);
+			 };
+	});
 
 }
 
@@ -197,8 +383,6 @@ function getNewAlerts(){
         var itemsToPublish = []; // Array
 
         for(key in items){
-        
-            //console.log(prop + ': ' + items[prop].title + ' ' + items[prop].link + '\n');
             
             // Check whether this item (from the RSS feed)
             // is more recent than the item most recently tweeted
@@ -214,129 +398,51 @@ function getNewAlerts(){
         itemsToPublish.sort(compareDates);
 
         for(var i in itemsToPublish){
-            console.log(itemsToPublish[i].pubDate + ' ' + itemsToPublish[i].title);
+        
+        	var alert = itemsToPublish[i];
+        
+            console.log(alert.pubDate + ' ' + alert.title);
             
             // Publish to the generic alerts tweet feed
-            publishToTwitter(twitterAllergenAlerts, itemsToPublish[i]);
+            publishToTwitter(allAlerts, alert);
             
             /*
             	Update the local record of the most recently
             	tweeted alert.
             */
-            setLatestPostedItemDate(itemsToPublish[i].pubDate);
+            setLatestPostedItemDate(alert.pubDate);
+    
+    
+	    	/*
+				Decode the escaped alert summary into markup,
+				albeit still an XML string.
+				
+				TODO: Find out where it's being escaped and 
+				skip that step.
+			*/	  
+			var alertDescriptionXml = xmlentities.decode(alert.description);
+			
+			// Turn the XML string into a DOM object.	
+			var alertDescriptionDom = new dom().parseFromString(alertDescriptionXml);
+			
+
+			/*
+				Extract the string value of the summary
+				and add it to the properties of this alert.
+			*/						
+			alert.summaryString = xpath.select('string(/*)', alertDescriptionDom); 
+
+			console.log('Alert Summary: ' + alert.summaryString);    
             
             /*
             	Check to see whether it should also be tweeted to 
             	more specific twitter feeds.
             */
             
+            console.log('Total feeds to check: '+ twitterApp.getTotalFeeds());
             
-            // Egg
-            if (
-            	twitterEggAlertsEnabled == true && (
-            		itemsToPublish[i].description.indexOf('egg')>-1 || 
-            		itemsToPublish[i].description.indexOf('Egg')>-1
-            	)
-            ) {
-                publishToTwitter(twitterEggAlerts, itemsToPublish[i]);
-            };
-            
-            
-            // Milk 
-            if (
-            	twitterMilkAlertsEnabled == true && (
-            		itemsToPublish[i].description.indexOf('milk')>-1 || 
-            		itemsToPublish[i].description.indexOf('Milk')>-1
-            	)
-            ) {            
-                publishToTwitter(twitterMilkAlerts, itemsToPublish[i]);
-            };
-                       
-            
-            // Fish 
-            if (
-            	twitterFishAlertsEnabled == true && (
-            		itemsToPublish[i].description.indexOf('fish')>-1 || 
-            		itemsToPublish[i].description.indexOf('Fish')>-1
-            	)
-            ) { 
-                publishToTwitter(twitterFishAlerts, itemsToPublish[i]);
-            };
-            
-            
-            /* Crustaceans
-               Including crab, lobster, crayfish, shrimp, prawn.
-            */
-			if (
-            	twitterCrustaceanAlertsEnabled == true && (
-            		itemsToPublish[i].description.indexOf('crustacean')>-1 ||
-	            	itemsToPublish[i].description.indexOf('Crustacean')>-1 || 
-	            	itemsToPublish[i].description.indexOf('crab')>-1 ||
-	            	itemsToPublish[i].description.indexOf('Crab')>-1 ||
-	            	itemsToPublish[i].description.indexOf('crayfish')>-1 ||
-	            	itemsToPublish[i].description.indexOf('Crayfish')>-1 ||
-	            	itemsToPublish[i].description.indexOf('shrimp')>-1 ||
-	            	itemsToPublish[i].description.indexOf('Shrimp')>-1 ||
-	            	itemsToPublish[i].description.indexOf('prawn')>-1 ||
-	            	itemsToPublish[i].description.indexOf('Prawn')>-1
-            	)
-            ) {                
-				publishToTwitter(twitterCrustaceanAlerts, itemsToPublish[i]);
-            };
-            
-            
-            // Gluten
-			if (
-            	twitterGlutenAlertsEnabled == true && (
-            		itemsToPublish[i].description.indexOf('gluten')>-1 || 
-            		itemsToPublish[i].description.indexOf('Gluten')>-1
-            	)
-            ) { 
-                publishToTwitter(twitterGlutenAlerts, itemsToPublish[i]);
-            };
-            
-            // Nuts
-			if (
-            	twitterNutAlertsEnabled == true && (
-            		itemsToPublish[i].description.indexOf('nut')>-1 || 
-            		itemsToPublish[i].description.indexOf('Nut')>-1 ||
-            		itemsToPublish[i].description.indexOf('peanut')>-1 || 
-            		itemsToPublish[i].description.indexOf('Peanut')>-1
-            	) 
-            ) {                
-                publishToTwitter(twitterNutAlerts, itemsToPublish[i]);                
-            };
-            
-            // Peanuts 
-			if (
-        		twitterPeanutAlertsEnabled == true && (
-            		itemsToPublish[i].description.indexOf('peanut')>-1 || 
-            		itemsToPublish[i].description.indexOf('Peanut')>-1
-            	)
-            ) {
-                publishToTwitter(twitterPeanutAlerts, itemsToPublish[i]);
-            };
-            
-            // Celery 
-			if (
-            	twitterCeleryAlertsEnabled == true && (
-            		itemsToPublish[i].description.indexOf('celery')>-1 || 
-            		itemsToPublish[i].description.indexOf('Celery')>-1
-            	)
-            ) { 
-                publishToTwitter(twitterCeleryAlerts, itemsToPublish[i]);
-            };
-            
-            // Sulphites 
-			if (
-            	twitterSulphiteAlertsEnabled == true && (
-            		itemsToPublish[i].description.indexOf('sulphite')>-1 || 
-            		itemsToPublish[i].description.indexOf('Sulphite')>-1 ||
-            		itemsToPublish[i].description.indexOf('sulphur')>-1 || 
-            		itemsToPublish[i].description.indexOf('Sulpher')>-1 
-            	)
-            ) { 
-                publishToTwitter(twitterSulphiteAlerts, itemsToPublish[i]);
+            for (var f = 0; f < twitterApp.getTotalFeeds(); f++) {                        
+            	publishFiltered(twitterApp.feeds[f], alert);
             };
             
         }
@@ -365,3 +471,42 @@ setInterval(
 	}, 
 	intervalLength
 );
+
+
+function publishFiltered(twitterAccount, alert) {
+            	
+	console.log('Checking ' + twitterAccount.keywords[0]);            	
+            	
+	/* 
+		Check whether the Twitter account associated with this allergen
+		is enabled.  If not, there's no point in continuing.
+		The same goes for if there are no keywords associated with this 
+		account.
+	*/ 
+	if (!twitterAccount.enabled || twitterAccount.getTotalKeywords() == 0) {	
+		return;
+	};
+	
+	
+	/*
+		Loop through the list of keywords for matching alerts
+		to this allergen.  If the description for the current
+		alert contains one of these keywords, publish the alert
+		to the Twitter feed specified. Stop as soon as a match
+		is made or once the entire list of keywords has been
+		checked.
+	*/
+	var relevant = false;
+	var i = 0;	
+	do {  
+		
+		if (alert.summaryString.indexOf(twitterAccount.keywords[i++]) >= 0) {
+			relevant = true;
+			publishToTwitter(twitterAccount, alert);
+		}
+			
+	} while (
+		relevant != true &&
+		i < twitterAccount.getTotalKeywords()
+	);
+};
