@@ -114,7 +114,7 @@ crustaceanAlerts.initTwitter(
 
 /*
 	Twitter Account: UK Egg Alerts
-	https://twitter.com/ukeggalerts
+	https://twitter.com/UkEggAlerts
 */
 var eggAlerts = new Feed(new Array("egg"));
 twitterApp.addFeed(eggAlerts);
@@ -127,7 +127,7 @@ eggAlerts.initTwitter(
 
 /*
 	Twitter Account: UK Fish Alerts
-	https://twitter.com/ukfishalerts
+	https://twitter.com/UkFishAlerts
 */
 var fishAlerts = new Feed(new Array("fish"));
 twitterApp.addFeed(fishAlerts);
@@ -168,7 +168,7 @@ lupinAlerts.initTwitter(
 
 /*
 	Twitter Account: UK Milk Alerts
-	https://twitter.com/ukmilkalerts
+	https://twitter.com/UkMilkAlerts
 */
 var milkAlerts = new Feed(new Array("milk"));
 twitterApp.addFeed(milkAlerts);
@@ -211,7 +211,7 @@ mustardAlerts.initTwitter(
 
 /*
 	Twitter Account: UK Nut Alerts
-	https://twitter.com/uknutalerts
+	https://twitter.com/UkNutAlerts
 */
 var nutAlerts = new Feed(new Array("nut", "cashew", "almond"));
 twitterApp.addFeed(nutAlerts);
@@ -252,7 +252,7 @@ sesameAlerts.initTwitter(
 
 /*
 	Twitter Account: UK Soya Alerts
-	TODO: https://twitter.com/uksoyaalerts
+	https://twitter.com/UkSoyaAlerts
 */
 var soyaAlerts = new Feed(new Array("soya"));
 twitterApp.addFeed(soyaAlerts);
