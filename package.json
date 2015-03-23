@@ -14,7 +14,8 @@
     "passport-twitter": "*",
     "xpath": "*",
     "xmldom": "*",
-    "xml-entities": "*"    
+    "xml-entities": "*",
+    "http": "*"    
   },
   "engines": {
     "node": "0.10.x",

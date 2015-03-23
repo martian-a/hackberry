@@ -6,7 +6,31 @@ TwitterPublishingApp = require('./lib/twitterPublishingApp'),
 Feed = require('./lib/feed'),
 xpath = require('xpath'),
 dom = require('xmldom').DOMParser,
-xmlentities = require("xml-entities");
+xmlentities = require("xml-entities")
+http = require('http');
+
+
+/*
+	Bind the app to a port on heroku.
+*/	
+var serverPort = process.env['PORT'];
+http.createServer(function (req, res) {
+
+	setTimeout(
+		function () {
+	
+	  		var url_parts = url.parse(req.url);
+	  		console.log('\nHTTP REQUEST: ' + url_parts.pathname + '\n');	  		
+		
+			// Redirect all requests to the generic twitter feed.
+	    	res.writeHead(302, {'Location': 'https://twitter.com/AllergenAlerts/'});
+       		res.end();
+	    
+		}, 
+		2000
+	);
+}).listen(serverPort);
+
 
 // Config variables
 var rssUrl = 'http://www.food.gov.uk/news-updates/allergynews-rss';
