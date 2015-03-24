@@ -6,15 +6,27 @@ TwitterPublishingApp = require('./lib/twitterPublishingApp'),
 Feed = require('./lib/feed'),
 xpath = require('xpath'),
 dom = require('xmldom').DOMParser,
-xmlentities = require("xml-entities")
+xmlentities = require("xml-entities"),
 http = require('http');
 
 
 /*
-	Bind the app to a port on heroku.
-*/	
+	Listen for http requests and redirect
+	them to the generic twitter feed.
+	
+	In addition to providing something more
+	interesting to read, this helps to stop 
+	Heroku complaining that the (web) app 
+	hasn't bound to the port it's provided.
+*/
 var serverPort = process.env['PORT'];
-http.createServer(function (req, res) {
+var server = http.createServer().listen(serverPort);
+
+server.on('error', function(e){
+	console.log(e);
+});
+
+server.on('request', function(req, res){
 
 	setTimeout(
 		function () {
@@ -29,14 +41,22 @@ http.createServer(function (req, res) {
 		}, 
 		2000
 	);
-}).listen(serverPort);
+			
+});
+
+server.listen(serverPort);
 
 
-// Config variables
+
+/* 
+	Data source:
+	An RSS feed published by the Food Standards Agency.
+*/
 var rssUrl = 'http://www.food.gov.uk/news-updates/allergynews-rss';
 
+
 /*
-	Specify how frequently the FSA RSS feed should be checked
+	Specify how frequently the RSS feed should be checked
 	(milliseconds)
 */
 var oneMinute = (1000 * 60);
@@ -74,7 +94,7 @@ var twitterApp = new TwitterPublishingApp(
 	Twitter Account: Generic Allergen Alerts
 	https://twitter.com/allergenalerts
 */
-var allAlerts = new Feed();
+var allAlerts = new Feed('UK Allergen Alerts');
 allAlerts.initTwitter(
 	twitterApp, 
 	process.env['TWITTER_ALLERGEN_ALERTS_ACCESS_TOKEN'], 
@@ -86,37 +106,33 @@ allAlerts.initTwitter(
 	Twitter Account: UK Celery Alerts
 	TODO: https://twitter.com/ukceleryalerts
 */
-var celeryAlerts = new Feed(new Array("celery", "celeriac"));
+var celeryAlerts = new Feed('UK Celery Alerts', new Array("\\bcelery\\b", "\\bceleriacs?\\b"));
 twitterApp.addFeed(celeryAlerts);
-/*
 celeryAlerts.initTwitter(
 	twitterApp,
 	process.env['TWITTER_CELERY_ALERTS_ACCESS_TOKEN'], 
 	process.env['TWITTER_CELERY_ALERTS_ACCESS_SECRET']
 );
-*/
 
 
 /*
 	Twitter Account: UK Crustacean Alerts
 	TODO: https://twitter.com/ukcrustaceanalerts
 */
-var crustaceanAlerts = new Feed(new Array("crustacean", "shellfish", "crab", "crayfish", "prawn", "shrimp", "scampi"));
+var crustaceanAlerts = new Feed('UK Crustacean Alerts', new Array('\\bcrustaceans?\\b', "\\bshellfish\\b", "\\bcrabs?\\b", "\\bcrayfish\\b", "\\bprawns?\\b", "\\bshrimp\\b", "\\bscampi\\b"));
 twitterApp.addFeed(crustaceanAlerts);
-/*
 crustaceanAlerts.initTwitter(
 	twitterApp,
 	process.env['TWITTER_CRUSTACEAN_ALERTS_ACCESS_TOKEN'], 
 	process.env['TWITTER_CRUSTACEAN_ALERTS_ACCESS_SECRET']
 );
-*/
 
 
 /*
 	Twitter Account: UK Egg Alerts
 	https://twitter.com/UkEggAlerts
 */
-var eggAlerts = new Feed(new Array("egg"));
+var eggAlerts = new Feed("UK Egg Alerts", new Array("\\beggs?\\b"));
 twitterApp.addFeed(eggAlerts);
 eggAlerts.initTwitter(
 	twitterApp,
@@ -129,7 +145,7 @@ eggAlerts.initTwitter(
 	Twitter Account: UK Fish Alerts
 	https://twitter.com/UkFishAlerts
 */
-var fishAlerts = new Feed(new Array("fish"));
+var fishAlerts = new Feed("UK Fish Alerts", new Array("\\bfish\\b"));
 twitterApp.addFeed(fishAlerts);
 fishAlerts.initTwitter(
 	twitterApp,
@@ -142,7 +158,7 @@ fishAlerts.initTwitter(
 	Twitter Account: UK Gluten Alerts
 	https://twitter.com/ukglutenalerts
 */
-var glutenAlerts = new Feed(new Array("gluten"));
+var glutenAlerts = new Feed("UK Gluten Alerts", new Array("\\bgluten"));
 twitterApp.addFeed(glutenAlerts);
 glutenAlerts.initTwitter(
 	twitterApp,
@@ -155,22 +171,20 @@ glutenAlerts.initTwitter(
 	Twitter Account: UK Lupin Alerts
 	TODO: https://twitter.com/uklupinalerts
 */
-var lupinAlerts = new Feed(new Array("lupin"));
+var lupinAlerts = new Feed("UK Lupin Alerts", new Array("\\blupins?\\b"));
 twitterApp.addFeed(lupinAlerts);
-/*
 lupinAlerts.initTwitter(
 	twitterApp,
 	process.env['TWITTER_LUPIN_ALERTS_ACCESS_TOKEN'], 
 	process.env['TWITTER_LUPIN_ALERTS_ACCESS_SECRET']
 );
-*/
 
 
 /*
 	Twitter Account: UK Milk Alerts
 	https://twitter.com/UkMilkAlerts
 */
-var milkAlerts = new Feed(new Array("milk"));
+var milkAlerts = new Feed("UK Milk Alerts", new Array("\\bmilk\\b"));
 twitterApp.addFeed(milkAlerts);
 milkAlerts.initTwitter(
 	twitterApp,
@@ -183,37 +197,34 @@ milkAlerts.initTwitter(
 	Twitter Account: UK Mollusc Alerts
 	TODO: https://twitter.com/molluscalerts
 */
-var molluscAlerts = new Feed(new Array("mollusc", "snail", "squid", "whelk"));
+var molluscAlerts = new Feed("UK Mollusc Alerts", new Array("\\bmolluscs?\\b", "\\bsnails?\\b", "\\bsquid", "\\bwhelks?\\b"));
 twitterApp.addFeed(molluscAlerts);
-/*
 molluscAlerts.initTwitter(
 	twitterApp,
 	process.env['TWITTER_MOLLUSC_ALERTS_ACCESS_TOKEN'], 
 	process.env['TWITTER_MOLLUSC_ALERTS_ACCESS_SECRET']
 );
-*/
 
 
 /*
 	Twitter Account: UK Mustard Alerts
 	TODO: https://twitter.com/ukmustardalerts
 */
-var mustardAlerts = new Feed(new Array("mustard"));
+var mustardAlerts = new Feed("UK Mustard Alerts", new Array("\\bmustard"));
 twitterApp.addFeed(mustardAlerts);
-/*
 mustardAlerts.initTwitter(
 	twitterApp,
 	process.env['TWITTER_MUSTARD_ALERTS_ACCESS_TOKEN'], 
 	process.env['TWITTER_MUSTARD_ALERTS_ACCESS_SECRET']
 );
-*/
 
 
 /*
 	Twitter Account: UK Nut Alerts
 	https://twitter.com/UkNutAlerts
 */
-var nutAlerts = new Feed(new Array("nut", "cashew", "almond"));
+var treeNutMatchExpressions = new Array("\\b[^pea]?nuts?\\b", "\\bcashews?\\b", "\\balmonds?\\b");
+var nutAlerts = new Feed("UK Nut Alerts", new Array("\\bpeanuts?").concat(treeNutMatchExpressions));
 twitterApp.addFeed(nutAlerts);
 nutAlerts.initTwitter(
 	twitterApp,
@@ -226,7 +237,7 @@ nutAlerts.initTwitter(
 	Twitter Account: UK Peanut Alerts
 	TODO: https://twitter.com/ukpeanutalerts
 */
-var peanutAlerts = new Feed(new Array("peanut"));
+var peanutAlerts = new Feed("UK Peanut Alerts", new Array("\\bpeanuts?\\b"));
 twitterApp.addFeed(peanutAlerts);
 peanutAlerts.initTwitter(
 	twitterApp,
@@ -239,22 +250,20 @@ peanutAlerts.initTwitter(
 	Twitter Account: UK Sesame Seed Alerts
 	TODO: https://twitter.com/uksesamealerts
 */
-var sesameAlerts = new Feed(new Array("sesame"));
+var sesameAlerts = new Feed("UK Sesame Alerts", new Array("\\bsesame\\b"));
 twitterApp.addFeed(sesameAlerts);
-/*
 sesameAlerts.initTwitter(
 	twitterApp,
 	process.env['TWITTER_SESAME_SEED_ALERTS_ACCESS_TOKEN'], 
 	process.env['TWITTER_SESAME_SEED_ALERTS_ACCESS_SECRET']
 );
-*/
 
 
 /*
 	Twitter Account: UK Soya Alerts
 	https://twitter.com/UkSoyaAlerts
 */
-var soyaAlerts = new Feed(new Array("soya"));
+var soyaAlerts = new Feed("UK Soya Alerts", new Array("\\bsoya\\b"));
 twitterApp.addFeed(soyaAlerts);
 soyaAlerts.initTwitter(
 	twitterApp,
@@ -267,7 +276,7 @@ soyaAlerts.initTwitter(
 	Twitter Account: UK Sulphites Alerts
 	https://twitter.com/ukso2alerts
 */
-var sulphiteAlerts = new Feed(new Array("sulphite", "sulphur"));
+var sulphiteAlerts = new Feed("UK Sulphite Alerts", new Array("\\bsulphites?\\b", "\\bsulphur"));
 twitterApp.addFeed(sulphiteAlerts);
 sulphiteAlerts.initTwitter(
 	twitterApp,
@@ -278,30 +287,26 @@ sulphiteAlerts.initTwitter(
 
 /*
 	Twitter Account: UK Tree Nut Alerts
-	TODO: https://twitter.com/treenutalerts
+	https://twitter.com/UkTreeNutAlerts
 */
-var treeNutAlerts = new Feed(new Array("nut", "cashew", "almond"));
+var treeNutAlerts = new Feed("UK Tree Nut Alerts", treeNutMatchExpressions);
 twitterApp.addFeed(treeNutAlerts);
-/*
 treeNutAlerts.initTwitter(
 	twitterApp,
 	process.env['TWITTER_TREE_NUT_ALERTS_ACCESS_TOKEN'], 
 	process.env['TWITTER_TREE_NUT_ALERTS_ACCESS_SECRET']
 );
-*/
 
 console.log('Total feeds: ' + twitterApp.getTotalFeeds());
+console.log('App initialisation complete.\n');
 
-// Get date of latest posted article
-var latestPostedItemDate = getLatestPostedItemDate();
-
-console.log('Most recent item posted on: ' + latestPostedItemDate);
 
 // Needed for RSS parsing
 var handler = new htmlparser.RssHandler();
 var parser = new htmlparser.Parser(handler);
 
-// function to sort of dates
+
+// function to sort dates
 function compareDates(a, b) {
 
     var aDate = new Date(a.pubDate);
@@ -314,154 +319,200 @@ function compareDates(a, b) {
     return 0;
 }
 
-// get the date (uses flat file to be replaced with MongoDB)
-function getLatestPostedItemDate(){
+
+function getLatestPostedItemDate() {
 	
-	// Name of the log file containing the date of the most recently posted item
-	var latestPostLogFilename = 'latestPostedDate.txt';
+	/*
+		Attempt to retrieve the date of the most recent tweet
+		from the previous feed check.
+	*/
+	var dateTimeStringOfMostRecentTweet = null;		
 	
 	try {
-	
-	  // Create a new instance of Date based on the date of the most recently posted item 
-	  // as recorded in the log file
-	  return new Date(fs.readFileSync(latestPostLogFilename).toString());
-	  
+		dateTimeStringOfMostRecentTweet = fs.readFileSync('./data/most_recent_tweet.txt', 'utf8');		
 	} catch (e) {
+		console.log(e);
+	}
+	
+	var dateTimeObjectOfMostRecentTweet;
+	if (dateTimeStringOfMostRecentTweet == null || dateTimeStringOfMostRecentTweet.trim() === '') {
+		dateTimeObjectOfMostRecentTweet = new Date('01/01/2000');
+	} else {
+		dateTimeObjectOfMostRecentTweet = new Date(dateTimeStringOfMostRecentTweet);
+	}
+		 		
+	console.log('The timestamp for the most recently tweeted alert from the previous feed check is:\n' + dateTimeObjectOfMostRecentTweet.toString());		
+	
+	return dateTimeObjectOfMostRecentTweet;
 	  
-	  // Here you get the error when the file was not found,
-	  // but you also get any other error
-	  
-	  // Create a new instance of Date representing today
-	  // as there is no prior date recorded
-	  return null;
-	  
-	} 
 }
 
-// set the date (uses flat file to be replaced with MongoDB)
-function setLatestPostedItemDate(date){
-    latestPostedItemDate = date;
-    // write to file
-    fs.writeFile('latestPostedDate.txt', latestPostedItemDate);
-    return true;
+
+function setLatestPostedItemDate(dateTimeString) {
+    
+	/*
+		Store the timestamp specified.
+	*/
+	fs.writeFile('./data/most_recent_tweet.txt', dateTimeString, function (err) {
+		
+		if (err) { 
+			return console.log(err);
+		}		 
+		  		  
+	});
+    
+	return getLatestPostedItemDate();	
+	  
 }
 
 // post item to twitter
-function publishToTwitter(feed, item){
+function publishToTwitter(feed, alert){
     
-    console.log('Tweeting.');
+    console.log('Tweeting to ' + feed.name);
     
-    var title = item.title;
+    /*
+    	Check whether the title needs to be truncated
+    	in order to keep the total length of the tweet
+    	(including the link) to no more than 140 chars.
+    	
+    	Twitter will automatically shorten the link to  
+    	no more than 23 characters.
+    	
+    	If the title needs to be shortened, add an 
+    	elipse character to the end of what remains,
+    	to indicate that there is more text than is
+    	shown.
+     */
+    var title = alert.title;
     var linkLength = 23;
-    if (item.link.length < linkLength) {
-    	linkLength = item.link.length;
+    if (alert.link.length < linkLength) {
+    	linkLength = alert.link.length;
     }
     
     if ((linkLength + 1 + title.length) > 140) {
     	title = title.substring(0, (138 - linkLength)) + '…';
-    	console.log('Title shortened from:\n     ' + item.title + '\nto:\n     ' + title);
+    	console.log('Title shortened from:\n     ' + alert.title + '\nto:\n     ' + title);
     }
     
-    var tweet = title + ' ' + item.link;
+    // Construct the body of the tweet.
+    var tweet = title + ' ' + alert.link;
     
+
+    // Send the tweet.
     feed.twitterAccount.post('statuses/update', { status: tweet }, function(err, data, response) {
 		     if (err) {
 			 	console.log(err);
 			 	console.log(tweet);
 			 };
 	});
-
+    
+    /*
+		Update the local record of the most recently
+		tweeted alert.
+    */
+    setLatestPostedItemDate(alert.pubDate);    
+    
 }
 
 /*
 	Check the FSA RSS feed and publish new items on Twitter.
 */
-function getNewAlerts(){
+function getNewAlerts() {
 
+	console.log('\nChecking for new items.');
+	
+	var latestPostedItemDate = getLatestPostedItemDate();
+    
 	// Retrieve latest from FSA data feed
-    request({uri: rssUrl}, function(err, response, body){
+    request(
+    	{uri: rssUrl}, 
+    	function(err, response, body) {
 
-        // Basic error check
-        if(err && response.statusCode !== 200){
-            console.log('Request error.');
-        } else {
-        	console.log('Feed retrieved.');
-        }
-        
-        parser.parseComplete(body);
-        
-        var items = handler.dom.items;
-        
-        var itemsToPublish = []; // Array
+	        // Basic error check
+	        if(err && response.statusCode !== 200){
+	            console.log('Request error.');
+	        } else {
+	        	console.log('Feed retrieved.');
+	        }
+	        
+	        parser.parseComplete(body);
+	        
+	        var items = handler.dom.items;
+            var itemsToPublish = [];	            
+	
+	        for(key in items){
+	            
+	            // Check whether this item (from the RSS feed)
+	            // is more recent than the item most recently tweeted
+	            var itemDate = new Date(items[key].pubDate);
+	            
+	            if(itemDate > latestPostedItemDate){
+	                // add to a publish array here
+	                itemsToPublish.push(items[key]);
+	            };
+	        
+	        };
+	
+	        console.log(itemsToPublish.length + ' new items found.\n');            
+	
+	        publishNewAlerts(itemsToPublish);
+    	}        
+    )
+};
 
-        for(key in items){
-            
-            // Check whether this item (from the RSS feed)
-            // is more recent than the item most recently tweeted
-            var itemDate = new Date(items[key].pubDate);
-            
-            if(itemDate > latestPostedItemDate){
-                // add to a publish array here
-                itemsToPublish.push(items[key]);
-            };
-        
-        }
-        // sort items to publish on pubDate
-        itemsToPublish.sort(compareDates);
 
-        for(var i in itemsToPublish){
+function publishNewAlerts(itemsToPublish) {
+
+    // sort items to publish on pubDate
+    itemsToPublish.sort(compareDates);
+
+	for(var i in itemsToPublish) {
         
-        	var alert = itemsToPublish[i];
-        
-            console.log(alert.pubDate + ' ' + alert.title);
-            
-            // Publish to the generic alerts tweet feed
-            publishToTwitter(allAlerts, alert);
-            
-            /*
-            	Update the local record of the most recently
-            	tweeted alert.
-            */
-            setLatestPostedItemDate(alert.pubDate);
+    	var alert = itemsToPublish[i];
     
-    
-	    	/*
-				Decode the escaped alert summary into markup,
-				albeit still an XML string.
-				
-				TODO: Find out where it's being escaped and 
-				skip that step.
-			*/	  
-			var alertDescriptionXml = xmlentities.decode(alert.description);
+    	/*
+			Decode the escaped alert summary into markup,
+			albeit still an XML string.
 			
-			// Turn the XML string into a DOM object.	
-			var alertDescriptionDom = new dom().parseFromString(alertDescriptionXml);
-			
-
-			/*
-				Extract the string value of the summary
-				and add it to the properties of this alert.
-			*/						
-			alert.summaryString = xpath.select('string(/*)', alertDescriptionDom); 
-
-			console.log('Alert Summary: ' + alert.summaryString);    
-            
-            /*
-            	Check to see whether it should also be tweeted to 
-            	more specific twitter feeds.
-            */
-            
-            console.log('Total feeds to check: '+ twitterApp.getTotalFeeds());
-            
-            for (var f = 0; f < twitterApp.getTotalFeeds(); f++) {                        
-            	publishFiltered(twitterApp.feeds[f], alert);
-            };
-            
-        }
+			TODO: Find out where it's being escaped and 
+			skip that step.
+		*/	  
+		var alertDescriptionXml = xmlentities.decode(alert.description);
+		
+		// Turn the XML string into a DOM object.	
+		var alertDescriptionDom = new dom().parseFromString(alertDescriptionXml);
+		
+	
+		/*
+			Extract the string value of the summary
+			and add it to the properties of this alert.
+		*/						
+		alert.summaryString = xpath.select('string(/*)', alertDescriptionDom);	
+    	
+		/*
+			Log the date, title and summary of this alert.
+		 */
+		console.log(alert.pubDate + '\n' + alert.title + "\n\n" + alert.summaryString + "\n\n");
         
-    });
-    console.log('\n');
-}
+		
+        // Publish to the generic alerts tweet feed
+        publishToTwitter(allAlerts, alert);
+		
+        
+        /*
+        	Check to see whether it should also be tweeted to 
+        	more specific twitter feeds.
+        */        
+        console.log('Total feeds to check: '+ twitterApp.getTotalFeeds());		
+        
+        for (var f = 0; f < twitterApp.getTotalFeeds(); f++) {                        
+        	publishFiltered(twitterApp.feeds[f], alert);
+        };
+        
+    };
+
+};
+
 
 /*
 	Make an initial check for updates.
@@ -487,7 +538,7 @@ setInterval(
 
 function publishFiltered(twitterAccount, alert) {
             	
-	console.log('Checking ' + twitterAccount.keywords[0]);            	
+	console.log('Checking ' + twitterAccount.name);            	
             	
 	/* 
 		Check whether the Twitter account associated with this allergen
@@ -495,30 +546,32 @@ function publishFiltered(twitterAccount, alert) {
 		The same goes for if there are no keywords associated with this 
 		account.
 	*/ 
-	if (!twitterAccount.enabled || twitterAccount.getTotalKeywords() == 0) {	
+	if (!twitterAccount.enabled || twitterAccount.getTotalMatchExpressions() == 0) {	
 		return;
 	};
 	
 	
 	/*
-		Loop through the list of keywords for matching alerts
-		to this allergen.  If the description for the current
-		alert contains one of these keywords, publish the alert
-		to the Twitter feed specified. Stop as soon as a match
-		is made or once the entire list of keywords has been
+		Loop through the list of regular expressions for matching
+		alerts to this allergen.  If the description for the 
+		current alert contains one of these keywords, publish the 
+		alert to the Twitter feed specified. Stop as soon as a 
+		match is made or once the entire list of keywords has been
 		checked.
 	*/
 	var relevant = false;
 	var i = 0;	
 	do {  
 		
-		if (alert.summaryString.indexOf(twitterAccount.keywords[i++]) >= 0) {
-			relevant = true;
-			publishToTwitter(twitterAccount, alert);
-		}
+		var expression = new RegExp(twitterAccount.matchExpressions[i++], "gim");		
+		relevant = expression.test(alert.summaryString);		
 			
 	} while (
 		relevant != true &&
-		i < twitterAccount.getTotalKeywords()
+		i < twitterAccount.getTotalMatchExpressions()
 	);
+	
+	if (relevant == true) {
+		publishToTwitter(twitterAccount, alert);
+	}
 };
