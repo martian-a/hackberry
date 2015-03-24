@@ -1,14 +1,19 @@
-var request = require('request'),
-url = require('url'),
-htmlparser = require('htmlparser'),
-fs = require('fs'),
-TwitterPublishingApp = require('./lib/twitterPublishingApp'),
-Feed = require('./lib/feed'),
-xpath = require('xpath'),
-dom = require('xmldom').DOMParser,
-xmlentities = require("xml-entities"),
-http = require('http');
+/*
+    Import modules.
+ */
+var dom = require('xmldom').DOMParser;
+var Feed = require('./lib/feed');
+var fs = require('fs');
+var htmlparser = require('htmlparser');
+var http = require('http');
+var pg = require('pg');
+var request = require('request');
+var TwitterPublishingApp = require('./lib/twitterPublishingApp');
+var url = require('url');
+var xmlentities = require("xml-entities");
+var xpath = require('xpath');
 
+var DISABLE_PUBLISHING = true;
 
 /*
 	Listen for http requests and redirect
@@ -397,14 +402,17 @@ function publishToTwitter(feed, alert){
     // Construct the body of the tweet.
     var tweet = title + ' ' + alert.link;
     
+    if (DISABLE_PUBLISHING != true) {
 
-    // Send the tweet.
-    feed.twitterAccount.post('statuses/update', { status: tweet }, function(err, data, response) {
-		     if (err) {
-			 	console.log(err);
-			 	console.log(tweet);
-			 };
-	});
+        // Send the tweet.
+        feed.twitterAccount.post('statuses/update', { status: tweet }, function(err, data, response) {
+    		     if (err) {
+    			 	console.log(err);
+    			 	console.log(tweet);
+    			 };
+    	});
+	
+	}
     
     /*
 		Update the local record of the most recently
@@ -508,6 +516,8 @@ function publishNewAlerts(itemsToPublish) {
         for (var f = 0; f < twitterApp.getTotalFeeds(); f++) {                        
         	publishFiltered(twitterApp.feeds[f], alert);
         };
+                
+        console.log('\nCheck complete.\n\n');
         
     };
 
