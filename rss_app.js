@@ -6,7 +6,7 @@ var Feed = require('./lib/feed');
 var fs = require('fs');
 var htmlparser = require('htmlparser');
 var http = require('http');
-var pg = require('pg');
+var pgsync = require('pg-sync');
 var request = require('request');
 var TwitterPublishingApp = require('./lib/twitterPublishingApp');
 var url = require('url');
@@ -58,6 +58,12 @@ server.listen(serverPort);
 	An RSS feed published by the Food Standards Agency.
 */
 var rssUrl = 'http://www.food.gov.uk/news-updates/allergynews-rss';
+
+/*
+    Database (postgres)
+ */
+var databaseUrl = process.env['DATABASE_URL'];
+var client = new pgsync.Client();
 
 
 /*
@@ -324,28 +330,32 @@ function compareDates(a, b) {
     return 0;
 }
 
-
+/**
+ * Retrieve the most recent date that's currently in the database.
+ */
 function getLatestPostedItemDate() {
 	
+	// Open a connection to the database.
+	client.connect(databaseUrl);
+    client.setAutoCommit('on');
+	
 	/*
-		Attempt to retrieve the date of the most recent tweet
-		from the previous feed check.
-	*/
-	var dateTimeStringOfMostRecentTweet = null;		
+	    Execute a query to retrive the most recent date value stored in
+	    the published table. (1 record).
+	 */ 
+	var result = client.query("SELECT published FROM updates ORDER BY published DESC LIMIT 1");
 	
-	try {
-		dateTimeStringOfMostRecentTweet = fs.readFileSync('./data/most_recent_tweet.txt', 'utf8');		
-	} catch (e) {
-		console.log(e);
-	}
-	
+	// Convert the database result into a date object.
 	var dateTimeObjectOfMostRecentTweet;
-	if (dateTimeStringOfMostRecentTweet == null || dateTimeStringOfMostRecentTweet.trim() === '') {
+	if (result == null || result.length == 0) {
 		dateTimeObjectOfMostRecentTweet = new Date('01/01/2000');
 	} else {
-		dateTimeObjectOfMostRecentTweet = new Date(dateTimeStringOfMostRecentTweet);
+		dateTimeObjectOfMostRecentTweet = new Date(result[0].published);
 	}
-		 		
+	
+	// Close the connection to the database.
+	client.disconnect();
+	
 	console.log('The timestamp for the most recently tweeted alert from the previous feed check is:\n' + dateTimeObjectOfMostRecentTweet.toString());		
 	
 	return dateTimeObjectOfMostRecentTweet;
@@ -353,19 +363,33 @@ function getLatestPostedItemDate() {
 }
 
 
+/**
+ * Insert the date (inc. timestamp) supplied into the database.
+ * Returns the most recentl date that's currently in the database.
+ * 
+ * Given that we're only interested in recording a single point in 
+ * time, a database is overkill really. However, it's free and,
+ * most relevant, a persistent means of storing data on Heroku.
+ */
 function setLatestPostedItemDate(dateTimeString) {
     
-	/*
-		Store the timestamp specified.
-	*/
-	fs.writeFile('./data/most_recent_tweet.txt', dateTimeString, function (err) {
-		
-		if (err) { 
-			return console.log(err);
-		}		 
-		  		  
-	});
+    // Open a connection to the database
+    client.connect(databaseUrl);
+    client.setAutoCommit('on');
     
+	/*
+	    Formulate a query to insert the timestamp supplied
+	    into the database.
+	*/ 
+	var statement = "INSERT INTO updates (published) VALUES ('" + new Date(dateTimeString).toUTCString() + "')";
+	
+	// Execute the query.
+	client.query(statement);
+	
+	// Close the database connection
+    client.disconnect();
+	
+	// Return the most recent timestamp currently in the database
 	return getLatestPostedItemDate();	
 	  
 }
@@ -428,7 +452,7 @@ function publishToTwitter(feed, alert){
 function getNewAlerts() {
 
 	console.log('\nChecking for new items.');
-	
+
 	var latestPostedItemDate = getLatestPostedItemDate();
     
 	// Retrieve latest from FSA data feed

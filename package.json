@@ -15,7 +15,8 @@
     "xpath": "*",
     "xmldom": "*",
     "xml-entities": "*",
-    "http": "*"    
+    "http": "*",
+    "pg-sync": "*"    
   },
   "engines": {
     "node": "0.10.x",
