@@ -13,7 +13,7 @@ var url = require('url');
 var xmlentities = require("xml-entities");
 var xpath = require('xpath');
 
-var DISABLE_PUBLISHING = true;
+var DISABLE_PUBLISHING = false;
 
 console.log('Starting server on port ' + process.env.PORT);
 
