@@ -50,3 +50,6 @@ https://tranquil-taiga-7750.herokuapp.com/
 
 Easy management of environment variables:
 https://github.com/ddollar/heroku-config
+
+Regular HTTP requests:
+https://my.pingdom.com/
