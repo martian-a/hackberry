@@ -1,6 +1,6 @@
 /.project
-/latestPostedDate.txt
 /node_modules
 /keys/*.*
 !/keys/required.md
 /.env
+/.dev
