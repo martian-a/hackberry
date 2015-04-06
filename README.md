@@ -25,7 +25,7 @@ For the following allergens:
 ### Data Sources
 
 Food Standards Agency Food Alerts RSS Feed
-http://www.food.gov.uk/foodalerts-rss
+http://www.food.gov.uk/news-updates/allergynews-rss
 
 ### Code
 
