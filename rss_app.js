@@ -10,11 +10,12 @@ var pgsync = require('pg-sync');
 var request = require('request');
 var TwitterPublishingApp = require('./lib/twitterPublishingApp');
 var url = require('url');
-var xmlentities = require("xml-entities");
+var htmlentities = require("html-entities").AllHtmlEntities;
 var xpath = require('xpath');
 
-var DISABLE_PUBLISHING = false;
+var DISABLE_PUBLISHING = true;
 
+var entities = new htmlentities();
 console.log('Starting server on port ' + process.env.PORT);
 
 /*
@@ -437,6 +438,8 @@ function publishToTwitter(feed, alert){
     			 };
     	});
 	
+	} else {
+		console.log('!! Tweeting disabled !!');
 	}
     
     /*
@@ -477,7 +480,7 @@ function getNewAlerts() {
 	            
 	            // Check whether this item (from the RSS feed)
 	            // is more recent than the item most recently tweeted
-	            var itemDate = new Date(items[key].pubDate);
+	            var itemDate = new Date(items[key].pubDate);	           
 	            
 	            if(itemDate > latestPostedItemDate){
 	                // add to a publish array here
@@ -510,7 +513,7 @@ function publishNewAlerts(itemsToPublish) {
 			TODO: Find out where it's being escaped and 
 			skip that step.
 		*/	  
-		var alertDescriptionXml = xmlentities.decode(alert.description);
+		var alertDescriptionXml = entities.decode(alert.description);
 		
 		// Turn the XML string into a DOM object.	
 		var alertDescriptionDom = new dom().parseFromString(alertDescriptionXml);
@@ -520,12 +523,17 @@ function publishNewAlerts(itemsToPublish) {
 			Extract the string value of the summary
 			and add it to the properties of this alert.
 		*/						
-		alert.summaryString = xpath.select('string(/*)', alertDescriptionDom);	
+		alert.summaryString = entities.decode(xpath.select('string(/*)', alertDescriptionDom));
+		
+		/*
+		 	Decode the title string
+		 */
+		alert.titleString = entities.decode(entities.decode(alert.title));
     	
 		/*
 			Log the date, title and summary of this alert.
 		 */
-		console.log(alert.pubDate + '\n' + alert.title + "\n\n" + alert.summaryString + "\n\n");
+		console.log(alert.pubDate + '\n' + alert.titleString + "\n\n" + alert.summaryString + "\n\n");
         
 		
         // Publish to the generic alerts tweet feed

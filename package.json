@@ -14,7 +14,7 @@
     "passport-twitter": "*",
     "xpath": "*",
     "xmldom": "*",
-    "xml-entities": "*",
+    "html-entities": "*",
     "http": "*",
     "pg-sync": "*"    
   },
