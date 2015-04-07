@@ -1,0 +1,40 @@
+{
+  "name": "authenticator",
+  "version": "0.0.1",
+  "description": "Easy OAuth.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+  	"express": "*",
+  	"express-session": "*",
+  	"passport": "*",
+  	"passport-twitter": "*",
+  	"connect-flash": "*",
+  	"morgan": "*",
+  	"cookie-parser": "*",
+  	"body-parser": "*"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "2.7.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/martian-a/hackberry"
+  },
+  "keywords": [
+    "notifications",
+    "books",
+    "authors",
+    "reading"
+  ],
+  "author": "Kaikoda",
+  "bugs": {
+    "url": "https://github.com/martian-a/hackberry/issues"
+  },
+  "devDependencies": {},
+  "license": "GNU",
+  "homepage": "https://github.com/martian-a/hackberry"
+}
