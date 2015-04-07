@@ -13,7 +13,7 @@ var url = require('url');
 var htmlentities = require("html-entities").AllHtmlEntities;
 var xpath = require('xpath');
 
-var DISABLE_PUBLISHING = true;
+var DISABLE_PUBLISHING = false;
 
 var entities = new htmlentities();
 console.log('Starting server on port ' + process.env.PORT);
