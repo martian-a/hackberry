@@ -171,7 +171,7 @@ fishAlerts.initTwitter(
 	Twitter Account: UK Gluten Alerts
 	https://twitter.com/ukglutenalerts
 */
-var glutenAlerts = new Feed("UK Gluten Alerts", new Array("\\bgluten"));
+var glutenAlerts = new Feed("UK Gluten Alerts", new Array("\\bgluten", "\\bbarley\\b", "\\bwheat\\b", "\\brye\\b"));
 twitterApp.addFeed(glutenAlerts);
 glutenAlerts.initTwitter(
 	twitterApp,
